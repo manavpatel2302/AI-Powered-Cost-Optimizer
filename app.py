@@ -1,99 +1,73 @@
-from flask import Flask, request, render_template, redirect, url_for
-import pandas as pd
-import numpy as np
-from werkzeug.utils import secure_filename
-import os
 import streamlit as st
+import pandas as pd
 
-app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = 'uploads/'
-ALLOWED_EXTENSIONS = {'xlsx', 'xls', 'csv', 'sheets'}
+st.set_page_config(page_title="Cost Optimizer AI", layout="wide")
 
-# Ensure upload folder exists
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+st.title("🧠 AI-Powered Cost Optimization for R&D")
+st.markdown("Upload your design data to receive cost insights, material efficiency analysis, and design suggestions.")
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+# --- File Upload Section ---
+uploaded_file = st.file_uploader("📁 Upload your file (.csv or .xlsx)", type=["csv", "xlsx"])
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+if uploaded_file:
+    try:
+        if uploaded_file.name.endswith('.csv'):
+            df = pd.read_csv(uploaded_file)
+        else:
+            df = pd.read_excel(uploaded_file)
 
-@app.route('/upload', methods=['POST'])
-def upload_file():
-    if 'file' not in request.files:
-        return "No file uploaded", 400
+        st.success("✅ File uploaded successfully!")
+        st.subheader("🔍 Uploaded Data Preview")
+        st.dataframe(df.head())
 
-    file = request.files['file']
+        # --- Mocked AI Insights ---
+        st.subheader("📊 Optimization Summary")
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Cost Reduction Potential", "28.5%")
+        col2.metric("Material Efficiency", "18.3%")
+        col3.metric("Durability Score", "87/100")
 
-    if file.filename == '':
-        return "No file selected", 400
+        st.markdown("## 🛠️ AI-Recommended Designs")
+        designs = [
+            {
+                "ID": "VAH-2245",
+                "Description": "Feed Mixing Chamber",
+                "Cost": "$2,150",
+                "Durability": "88/100",
+                "Materials": "Polymer, Stainless Steel",
+                "Score": "94.7"
+            },
+            {
+                "ID": "VAH-2246",
+                "Description": "Cooling Fan Assembly",
+                "Cost": "$1,780",
+                "Durability": "85/100",
+                "Materials": "Aluminum, PVC",
+                "Score": "92.1"
+            },
+            {
+                "ID": "VAH-2247",
+                "Description": "Vibration Control Base",
+                "Cost": "$980",
+                "Durability": "90/100",
+                "Materials": "Rubber, Steel",
+                "Score": "95.2"
+            }
+        ]
 
-    if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(filepath)
+        design_df = pd.DataFrame(designs)
+        st.dataframe(design_df)
 
-        try:
-            # Load Excel file
-            df = pd.read_excel(filepath)
+        st.markdown("## ✅ Design Recommendations")
+        recommendations = [
+            "🔁 Replace stainless steel with aluminum where feasible.",
+            "💨 Improve chamber airflow by 15% to enhance cooling efficiency.",
+            "⚙️ Reduce motor RPM by 5% to save energy without performance loss."
+        ]
+        for rec in recommendations:
+            st.markdown(f"- {rec}")
 
-            # --- Simple mock analysis for demonstration ---
-            cost_reduction = "28.5%"
-            material_efficiency = "18.3%"
-            durability_score = "87/100"
-
-            # Simulate some design suggestions
-            designs = [
-                {
-                    "id": "VAH-2245",
-                    "description": "Feed Mixing Chamber",
-                    "cost": "$2,150",
-                    "durability": "88/100",
-                    "materials": "Polymer, Stainless Steel",
-                    "score": "94.7"
-                },
-                {
-                    "id": "VAH-2246",
-                    "description": "Cooling Fan Assembly",
-                    "cost": "$1,780",
-                    "durability": "85/100",
-                    "materials": "Aluminum, PVC",
-                    "score": "92.1"
-                },
-                {
-                    "id": "VAH-2247",
-                    "description": "Vibration Control Base",
-                    "cost": "$980",
-                    "durability": "90/100",
-                    "materials": "Rubber, Steel",
-                    "score": "95.2"
-                }
-            ]
-
-            recommendations = [
-                "Replace stainless steel with aluminum where feasible.",
-                "Improve chamber airflow by 15% to enhance cooling efficiency.",
-                "Reduce motor RPM by 5% to save energy without performance loss."
-            ]
-
-            # Also display uploaded table
-            table_html = df.to_html(classes="table-auto w-full text-left text-sm", index=False, border=0)
-
-            return render_template(
-                'results.html',
-                cost_reduction=cost_reduction,
-                material_efficiency=material_efficiency,
-                durability_score=durability_score,
-                designs=designs,
-                recommendations=recommendations,
-                table_html=table_html
-            )
-
-        except Exception as e:
-            return f"Error processing file: {str(e)}", 500
-
-    return "Invalid file format", 400
-
-if __name__ == '__main__':
-    app.run(debug=True)
+    except Exception as e:
+        st.error(f"❌ Error reading file: {str(e)}")
+else:
+    st.info("Please upload a .csv or .xlsx file to begin.")
