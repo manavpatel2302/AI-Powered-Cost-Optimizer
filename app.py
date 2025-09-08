@@ -56,7 +56,7 @@ def train_model(df, feature_cols, target_col):
 
 
 # --- Main App UI ---
-st.title("🧠 Extreme AI Cost Optimizer for R&D")
+st.title("🧠 AI Powered Cost Optimizer for R&D")
 st.markdown("Use an AI model to predict costs, analyze drivers, and get optimization suggestions. **Load sample data or upload your own.**")
 
 df = None
