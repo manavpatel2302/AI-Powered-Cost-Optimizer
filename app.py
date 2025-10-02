@@ -135,6 +135,6 @@ if df is not None:
 # --- Watermark ---
 st.markdown("""
     <div style="color: #1BE687;" class="watermark">
-        Developed by Manav Patel ❤️‍🩹
+        Developed by Manav Patel ⚙️
     </div>
     """, unsafe_allow_html=True)
