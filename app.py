@@ -132,3 +132,9 @@ if df is not None:
                 st.markdown(f"- **Investigate `{top_feature}`**: This is the primary driver of cost. Look for ways to optimize it (e.g., if it's `material_type`, explore cheaper alternatives; if it's `machining_hours`, improve process efficiency).")
 
                 st.success("✅ Analysis complete!")
+# --- Watermark ---
+st.markdown("""
+    <div style="color: #1BE687;" class="watermark">
+        Developed by Manav Patel ❤️‍🩹
+    </div>
+    """, unsafe_allow_html=True)
