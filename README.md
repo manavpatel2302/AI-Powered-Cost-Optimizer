@@ -1,7 +1,3 @@
-Here is a sample `DOCUMENTATION.md` for the AI-Powered Cost Optimizer GitHub project. This provides instructions and details for setup, usage, and contribution, based on the typical practices seen in similar Streamlit and AI-powered cost optimization tools.[1][2][3]
-
-***
-
 # AI-Powered Cost Optimizer Documentation
 
 ## Project Overview
